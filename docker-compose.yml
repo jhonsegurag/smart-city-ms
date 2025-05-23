@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app-cities:
+    build: .
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - db-cities
+    networks:
+      - microservices-network
+
+  db-cities:
+    image: mysql:8.3
+    restart: always
+    ports:
+      - "3309:3309"
+    environment:
+      MYSQL_DATABASE: city_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_TCP_PORT: 3309
+    volumes:
+      - .dbcity:/var/lib/mysql-city:rw
+    user: mysql
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    external: true
+
+volumes:
+  dbcity:
+    name: dbcity
